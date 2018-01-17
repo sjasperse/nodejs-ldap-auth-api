@@ -1,0 +1,19 @@
+{
+  "name": "ldap-auth-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0",
+    "jsonwebtoken": "^7.2.1",
+    "ldapjs": "^1.0.1",
+    "lodash": "^4.17.4"
+  }
+}

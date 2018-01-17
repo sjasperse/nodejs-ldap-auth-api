@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+    auth:
+        container_name: auth
+        build: .
+        environment: 
+            ENVIRONMENT: LOCAL
+            AUTH_COOKIE_NAME: auth-LOCAL
+            LDAP_PATH: ldap://ldap-server/
+            LDAP_SEARCH_BASE_DN: "dc=my-company,dc=com"
+            LDAP_DN: "cn=readonly,dc=my-company,dc=com"
+            LDAP_PASSWORD: readonly
+
+    ldap-server:
+        image: osixia/openldap:1.1.10
+        command:  --copy-service --loglevel warning
+        volumes:
+            - "./ldap-server/seed.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-seed.ldif"
+        environment:
+            LDAP_ORGANISATION: My Company
+            LDAP_DOMAIN: my-company.com
+            LDAP_ADMIN_PASSWORD: password
+            LDAP_READONLY_USER: "true"
+        ports:
+            - "389:389"
+            - "636:636"
+
+    proxy:
+        build: ./test-proxy
+        ports:
+            - "80:80"
+            - "443:443"
+            - "8001:8001"
+        environment:
+            - "APPS_ROOT_HOST=apps-root"
+            - "APPS_ROOT_PORT=80"
+            - "AUTH_API_HOST=auth"
+            - "AUTH_API_PORT=3000"
+            - "HTTPS_CERT_FILE=/etc/ssl/cert/self-signed-cert.pem"
+        volumes: 
+            - "./test-proxy/self-signed-cert.pem:/etc/ssl/cert/self-signed-cert.pem"
+    apps-root:
+        image: tutum/hello-world

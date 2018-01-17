@@ -1,0 +1,8 @@
+# Add Test User
+dn: uid=test.user,dc=my-company,dc=com
+changetype: add
+objectClass: inetOrgPerson
+cn: Test User
+sn: User
+uid: test.user
+userPassword: password
